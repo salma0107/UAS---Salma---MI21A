@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+    <title>Pendataan Sekolah</title>
+</head>
+
+<body class="bg-cover bg-no-repeat bg-fixed"
+    style="background-image: url('https://i.postimg.cc/Y9fGWv9J/woodsabil.jpg');">
+    <div class="container mx-auto mt-4">
+        <div class="box bg-stone-300 rounded-md w-3/4 mx-auto opacity-90 p-4">
+            <div class="text-center">
+                <h1 class="font-mono text-4xl font-semibold text-gray-800">P E N D A T A A N S E K O L A H</h1>
+            </div>
+            <br>
+            <div class="text-center font-mono">
+                <marquee width="90%">Jl. Ir. H. Juanda No.161 Argasari Kota Tasikmalaya, Jawa Barat 46151</marquee>
+                <!-- <p class="font-mono text-gray-800">Jl. Ir. H. Juanda No.161 Argasari Kota Tasikmalaya, Jawa Barat 46151
+                </p> -->
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="container mx-auto mt-4">
+        <div class="box bg-stone-300 p-6 rounded-md w-3/4 mx-auto opacity-90">
+            <div class="container">
+                <form id="add-school-form">
+                    <label class="font-mono text-stone-900 "><strong>Nama Sekolah</strong></label>
+                    <input class="w-full p-1 border-2 border-gray-300 rounded-md mb-2 px-4 py-2" type="text"
+                        id="nama_sekolah" name="nama_sekolah" required placeholder="Isi nama sekolah disini...">
+
+                    <label class="font-mono text-stone-900"><strong>Nama Kepala Sekolah</strong></label>
+                    <input class="w-full p-1 border-2 border-gray-300 rounded-md mb-2 px-4 py-2" type="text"
+                        id="kepala_sekolah" name="kepala_sekolah" required
+                        placeholder="Isi nama kepala sekolah disini...">
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="font-mono text-stone-900"><strong>Akreditasi</strong></label>
+                            <input class="w-full p-1 border-2 border-gray-300 rounded-md mb-2 px-4 py-2" type="text"
+                                id="akreditasi" name="akreditasi" required placeholder="Isi akreditasi disini...">
+                        </div>
+                        <div>
+                            <label class="font-mono text-stone-900"><strong>Tahun Berdiri</strong></label>
+                            <input class="w-full p-1 border-2 border-gray-300 rounded-md mb-2 px-4 py-2" type="number"
+                                id="tahun_berdiri" name="tahun_berdiri" required
+                                placeholder="Isi tahun berdiri disini...">
+                        </div>
+                        <div>
+                            <label class="font-mono text-stone-900"><strong>Jumlah Siswa</strong></label>
+                            <input class="w-full p-1 border-2 border-gray-300 rounded-md mb-2 px-4 py-2" type="number"
+                                id="jumlah_siswa" name="jumlah_siswa" required placeholder="Isi jumlah siswa disini...">
+                        </div>
+                    </div>
+                    <button
+                        class="mt-4 px-4 py-2 bg-stone-700 text-white w-full p-1 border-2 border-gray-400 rounded-md mb-2"
+                        id="button" type="button" onclick="saveData()"><strong>Tambah</strong></button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container mx-auto mt-4">
+        <div class="box bg-stone-300  p-6 rounded-md w-3/4 mx-auto opacity-90">
+            <p class="text-center font-mono text-xl"><strong>DAFTAR DATA SEKOLAH</strong></p>
+            <br>
+            <table class="hover:border-collapse border border-slate-500 w-full bg-stone-300 ">
+                <thead>
+                    <tr>
+                        <th class="text-center border border-slate-600 px-2 py-2 font-bold uppercase">
+                            No
+                        </th>
+                        <th class="text-center border border-slate-600 px-2 font-bold uppercase">
+                            Nama Sekolah
+                        </th>
+                        <th class="text-center border border-slate-600 px-2 font-bold uppercase">
+                            Kepala Sekolah
+                        </th>
+                        <th class="text-center border border-slate-600 px-2 font-bold uppercase">
+                            Akreditasi
+                        </th>
+                        <th class="text-center border border-slate-600 px-2 font-bold uppercase">
+                            Tahun
+                        </th>
+                        <th class="text-center border border-slate-600 px-2 font-bold uppercase">
+                            Jml siswa
+                        </th>
+                        <th class="text-center border border-slate-600 px-2 font-bold uppercase">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="schools"></tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+
+    <div class="container mx-auto mt-4">
+        <div class="box bg-stone-300  p-2 rounded-md w-3/4 mx-auto opacity-90">
+            <p class="font-mono text-center text-s">Terimakasih telah berkunjung ke website kami - have a nice day - salma - mi21a</p>
+        </div>
+    </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        const getSchool = async () => {
+            try {
+                const response = await axios.get('http://103.163.110.11:3031/schools');
+                const schools = response.data;
+                let bucket = '';
+                schools.forEach((school, i) => {
+                    bucket += `
+            <tr>
+                <td class="text-center border border-slate-600 px-4 py-2">${i + 1}</td>
+                    <td class="text-left border border-slate-600 px-4 py-2">${school.nama_sekolah}</td>
+                    <td class="text-left border border-slate-600 px-4 py-2">${school.kepala_sekolah}</td>
+                    <td class="text-center border border-slate-600 px-4 py-2">${school.akreditasi}</td>
+                    <td class="text-center border border-slate-600 px-4 py-2">${school.tahun_berdiri}</td>
+                    <td class="text-center border border-slate-600 px-4 py-2">${school.jumlah_siswa}</td>
+                    <td class="text-center border border-slate-600 px-4 py-2">
+                        <button onclick="editData('${school.id}', '${school.nama_sekolah}', '${school.kepala_sekolah}', '${school.akreditasi}', '${school.tahun_berdiri}', '${school.jumlah_siswa}')" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteData(${school.id})" class="bg-red-500 hover:bg-red-700 text-white py-1 px-4 rounded">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+            </tr>
+          `;
+                });
+                document.getElementById('schools').innerHTML = bucket;
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+        getSchool();
+
+
+        const editData = (id, nama_sekolah, kepala_sekolah, akreditasi, tahun_berdiri, jumlah_siswa) => {
+            document.getElementById('nama_sekolah').value = nama_sekolah;
+            document.getElementById('kepala_sekolah').value = kepala_sekolah;
+            document.getElementById('akreditasi').value = akreditasi;
+            document.getElementById('tahun_berdiri').value = tahun_berdiri;
+            document.getElementById('jumlah_siswa').value = jumlah_siswa;
+            document.getElementById('button').innerText = 'Ubah';
+            document.getElementById('button').setAttribute('onclick', `updateData(${id})`);
+        };
+
+        const updateData = async (id) => {
+            try {
+                const nama_sekolah = document.getElementById('nama_sekolah').value;
+                const kepala_sekolah = document.getElementById('kepala_sekolah').value;
+                const akreditasi = document.getElementById('akreditasi').value;
+                const tahun_berdiri = document.getElementById('tahun_berdiri').value;
+                const jumlah_siswa = document.getElementById('jumlah_siswa').value;
+                const text = 'Apakah Anda yakin ingin mengubah data?';
+                if (confirm(text)) {
+                    await axios.patch(`http://103.163.110.11:3031/schools/${id}`, {
+                        nama_sekolah: nama_sekolah,
+                        kepala_sekolah: kepala_sekolah,
+                        akreditasi: akreditasi,
+                        tahun_berdiri: tahun_berdiri,
+                        jumlah_siswa: jumlah_siswa
+                    });
+
+                    // Reset form fields
+                    document.getElementById('nama_sekolah').value = '';
+                    document.getElementById('kepala_sekolah').value = '';
+                    document.getElementById('akreditasi').value = '';
+                    document.getElementById('tahun_berdiri').value = '';
+                    document.getElementById('jumlah_siswa').value = '';
+
+                    // Change button text and onclick event
+                    document.getElementById('button').innerText = 'Tambah';
+                    document.getElementById('button').setAttribute('onclick', 'saveData()');
+                    getSchool();
+                    console.log('Data berhasil diperbarui');
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+
+        const deleteData = async (id) => {
+            try {
+                const text = 'Apakah Anda yakin ingin menghapus data?';
+                if (confirm(text)) {
+                    await axios.delete(`http://103.163.110.11:3031/schools/${id}`);
+                    getSchool();
+                    console.log('Data berhasil dihapus');
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+
+        const saveData = async () => {
+    try {
+        const nama_sekolah = document.getElementById('nama_sekolah').value;
+        const kepala_sekolah = document.getElementById('kepala_sekolah').value;
+        const akreditasi = document.getElementById('akreditasi').value;
+        const tahun_berdiri = document.getElementById('tahun_berdiri').value;
+        const jumlah_siswa = document.getElementById('jumlah_siswa').value;
+
+        // Check if any field is empty
+        if (!nama_sekolah || !kepala_sekolah || !akreditasi || !tahun_berdiri || !jumlah_siswa) {
+            alert('Harap lengkapi semua field sebelum menyimpan data!');
+            return;
+        }
+
+        await axios.post('http://103.163.110.11:3031/schools', {
+            nama_sekolah: nama_sekolah,
+            kepala_sekolah: kepala_sekolah,
+            akreditasi: akreditasi,
+            tahun_berdiri: tahun_berdiri,
+            jumlah_siswa: jumlah_siswa
+        });
+
+        // Reset form fields
+        document.getElementById('nama_sekolah').value = '';
+        document.getElementById('kepala_sekolah').value = '';
+        document.getElementById('akreditasi').value = '';
+        document.getElementById('tahun_berdiri').value = '';
+        document.getElementById('jumlah_siswa').value = '';
+
+        getSchool();
+        console.log('Data berhasil disimpan');
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+    </script>
+</body>
+
+</html>
